@@ -23,16 +23,17 @@ function App() {
   } = useGameState();
 
   const { playSuccessSound, playErrorSound, playCelebrationSound } = useMetronome({
-    bpm: 140,
+    bpm: 140, // 这个参数现在在useMetronome内部被忽略，固定使用140 BPM
     isPlaying: gameState.isPlaying,
     onBeat: updateBeat,
     onActionSuccess: () => {}
   });
 
+  // 从同一个hook获取playPerfectSound
   const { playPerfectSound } = useMetronome({
     bpm: 140,
-    isPlaying: gameState.isPlaying,
-    onBeat: updateBeat,
+    isPlaying: false, // 这个实例只用于获取音效函数
+    onBeat: () => {},
     onActionSuccess: () => {}
   });
 
@@ -50,11 +51,6 @@ function App() {
       if (gameState.combo === 5) {
         setTimeout(() => {
           playCelebrationSound();
-          setToastMessage({
-            message: '🎉 连击5次！太棒了！',
-            type: 'celebration',
-            timestamp: Date.now()
-          });
         }, 200);
       }
     } else if (gameState.combo === 0 && prevCombo.current > 0) {
@@ -149,7 +145,7 @@ function App() {
             
             {/* Toast Notifications - 浮在中间区域 */}
             {toastMessage && (
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 pointer-events-none">
                 <ToastNotification
                   message={toastMessage.message}
                   type={toastMessage.type}

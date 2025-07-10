@@ -12,8 +12,8 @@ export const useMetronome = ({ bpm, isPlaying, onBeat, onActionSuccess }: Metron
   const audioContextRef = useRef<AudioContext | null>(null);
   const bgmRef = useRef<HTMLAudioElement | null>(null);
   
-  // 使用140 BPM
-  const actualBpm = 140;
+  // 使用140 BPM作为节拍器速度
+  const metronomeBpm = 140;
 
   useEffect(() => {
     // Initialize BGM
@@ -21,13 +21,15 @@ export const useMetronome = ({ bpm, isPlaying, onBeat, onActionSuccess }: Metron
       bgmRef.current = new Audio('https://p.gsxcdn.com/3076374150_wju8pkal.mp3');
       bgmRef.current.loop = true;
       bgmRef.current.volume = 0.3;
+      // BGM保持原速度，不受节拍器影响
     }
 
     if (isPlaying) {
-      // Start BGM
+      // Start BGM at original speed
       bgmRef.current?.play().catch(console.warn);
       
-      const beatInterval = (60 / actualBpm) * 1000;
+      // 节拍器使用140 BPM
+      const beatInterval = (60 / metronomeBpm) * 1000;
       
       intervalRef.current = setInterval(() => {
         onBeat();
@@ -50,7 +52,7 @@ export const useMetronome = ({ bpm, isPlaying, onBeat, onActionSuccess }: Metron
         clearInterval(intervalRef.current);
       }
     };
-  }, [actualBpm, isPlaying, onBeat]);
+  }, [metronomeBpm, isPlaying, onBeat]);
 
   // Cleanup BGM on unmount
   useEffect(() => {
@@ -61,6 +63,7 @@ export const useMetronome = ({ bpm, isPlaying, onBeat, onActionSuccess }: Metron
       }
     };
   }, []);
+
   const playBeatSound = () => {
     try {
       if (!audioContextRef.current) {
@@ -131,6 +134,42 @@ export const useMetronome = ({ bpm, isPlaying, onBeat, onActionSuccess }: Metron
     }
   };
 
+  const playPerfectSound = () => {
+    try {
+      if (!audioContextRef.current) {
+        audioContextRef.current = new AudioContext();
+      }
+      
+      const ctx = audioContextRef.current;
+      
+      // Create a special perfect sound with ascending tones
+      const frequencies = [1000, 1200, 1500, 1800]; // Ascending perfect chord
+      
+      frequencies.forEach((freq, index) => {
+        const oscillator = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        
+        oscillator.frequency.value = freq;
+        oscillator.type = 'sine';
+        
+        const startTime = ctx.currentTime + (index * 0.05);
+        const duration = 0.3;
+        
+        gainNode.gain.setValueAtTime(0, startTime);
+        gainNode.gain.linearRampToValueAtTime(0.25, startTime + 0.02);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
+        
+        oscillator.start(startTime);
+        oscillator.stop(startTime + duration);
+      });
+    } catch (error) {
+      console.warn('Audio playback failed:', error);
+    }
+  };
+
   const playCelebrationSound = () => {
     try {
       if (!audioContextRef.current) {
@@ -188,42 +227,6 @@ export const useMetronome = ({ bpm, isPlaying, onBeat, onActionSuccess }: Metron
       
       oscillator.start(ctx.currentTime);
       oscillator.stop(ctx.currentTime + 0.5);
-    } catch (error) {
-      console.warn('Audio playback failed:', error);
-    }
-  };
-
-  const playPerfectSound = () => {
-    try {
-      if (!audioContextRef.current) {
-        audioContextRef.current = new AudioContext();
-      }
-      
-      const ctx = audioContextRef.current;
-      
-      // Create a special perfect sound with ascending tones
-      const frequencies = [1000, 1200, 1500, 1800]; // Ascending perfect chord
-      
-      frequencies.forEach((freq, index) => {
-        const oscillator = ctx.createOscillator();
-        const gainNode = ctx.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(ctx.destination);
-        
-        oscillator.frequency.value = freq;
-        oscillator.type = 'sine';
-        
-        const startTime = ctx.currentTime + (index * 0.05);
-        const duration = 0.3;
-        
-        gainNode.gain.setValueAtTime(0, startTime);
-        gainNode.gain.linearRampToValueAtTime(0.25, startTime + 0.02);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
-        
-        oscillator.start(startTime);
-        oscillator.stop(startTime + duration);
-      });
     } catch (error) {
       console.warn('Audio playback failed:', error);
     }

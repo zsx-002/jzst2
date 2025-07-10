@@ -4,7 +4,7 @@ import { GameState, Question, GridCell, CharacterState, ToastMessage } from '../
 
 const GRID_WIDTH = 10;
 const GRID_HEIGHT = 9;
-const BEATS_PER_CYCLE = 8;
+const BEATS_PER_CYCLE = 8; // 恢复8拍循环
 
 const initialCharacterState: CharacterState = {
   x: 1,
@@ -35,6 +35,7 @@ export const useGameState = () => {
     currentQuestion: null,
     selectedAnswer: null,
     lastActionTime: 0,
+    lastBeatTime: Date.now(),
     gameGrid: createInitialGrid()
   });
 
@@ -82,7 +83,8 @@ export const useGameState = () => {
       isPlaying: true,
       currentBeat: 0,
       currentCycle: 0,
-      currentQuestion: generateQuestion()
+      currentQuestion: generateQuestion(),
+      lastBeatTime: Date.now()
     }));
   }, [generateQuestion]);
 
@@ -102,8 +104,6 @@ export const useGameState = () => {
 
   const executeAction = useCallback((action: 'jump' | 'forward' | 'crouch') => {
     const now = Date.now();
-    const beatStartTime = now - ((now - gameState.lastBeatTime) % (60000 / 140)); // 计算当前节拍开始时间
-    const timeSinceBeatStart = now - beatStartTime;
     
     setGameState(prev => {
       const newCharacter = { ...prev.character };
@@ -117,40 +117,53 @@ export const useGameState = () => {
       if (isActionBeat && prev.currentQuestion && prev.selectedAnswer !== null) {
         const isCorrectAnswer = prev.currentQuestion.options[prev.selectedAnswer] === prev.currentQuestion.correctAnswer;
         
-        if (isCorrectAnswer && timeSinceBeatStart <= 200) { // 200ms窗口
-          // 判断是否为Perfect时机（100ms内）
-          if (timeSinceBeatStart <= 100) {
-            actionResult = 'perfect';
-            newScore += 20; // Perfect给更高分数
-          } else {
-            actionResult = 'good';
-            newScore += 10;
-          }
-          newCombo += 1;
+        if (isCorrectAnswer) {
+          // 计算与节拍点的时间差
+          const beatInterval = (60 / 140) * 1000; // 140 BPM
+          const timeSinceLastBeat = now - prev.lastBeatTime;
+          const timeToNextBeat = beatInterval - timeSinceLastBeat;
+          const timingOffset = Math.min(timeSinceLastBeat, timeToNextBeat);
           
-          // Execute character action
-          switch (action) {
-            case 'jump':
-              newCharacter.y = Math.max(0, newCharacter.y - 1);
-              break;
-            case 'forward':
-              newCharacter.x = Math.min(GRID_WIDTH - 1, newCharacter.x + 1);
-              break;
-            case 'crouch':
-              newCharacter.y = Math.min(GRID_HEIGHT - 1, newCharacter.y + 1);
-              break;
+          // 200ms窗口判定
+          if (timingOffset <= 200) {
+            // 100ms内为Perfect
+            if (timingOffset <= 100) {
+              actionResult = 'perfect';
+              newScore += 20; // Perfect给更高分数
+            } else {
+              actionResult = 'good';
+              newScore += 10;
+            }
+            newCombo += 1;
+            
+            // Execute character action
+            switch (action) {
+              case 'jump':
+                newCharacter.y = Math.max(0, newCharacter.y - 1);
+                break;
+              case 'forward':
+                newCharacter.x = Math.min(GRID_WIDTH - 1, newCharacter.x + 1);
+                break;
+              case 'crouch':
+                newCharacter.y = Math.min(GRID_HEIGHT - 1, newCharacter.y + 1);
+                break;
+            }
+          } else {
+            // 超出时间窗口 - miss
+            newCombo = 0;
+            actionResult = 'miss';
           }
         } else {
-          // Wrong answer or outside timing window - miss
+          // Wrong answer - miss
           newCombo = 0;
           actionResult = 'miss';
         }
-      } else if (isActionBeat) {
-        // Action executed on correct beat but no answer selected or wrong timing - miss
+      } else if (!isActionBeat) {
+        // Action executed on wrong beat - miss
         newCombo = 0;
         actionResult = 'miss';
       } else {
-        // Action executed on wrong beat - miss
+        // Action executed on correct beat but no answer selected - miss
         newCombo = 0;
         actionResult = 'miss';
       }
@@ -169,29 +182,27 @@ export const useGameState = () => {
     });
     
     // Show appropriate toast based on action result
-    setGameState(prev => {
-      if (prev.actionResult === 'perfect') {
-        setTimeout(() => {
+    setTimeout(() => {
+      setGameState(prev => {
+        if (prev.actionResult === 'perfect') {
           setToastMessage({
             message: 'Perfect! 完美时机！',
             type: 'perfect',
             timestamp: now
           });
-        }, 50);
-      } else if (prev.actionResult === 'miss') {
-        setTimeout(() => {
+        } else if (prev.actionResult === 'miss') {
           setToastMessage({
             message: 'MISS! 连击中断',
             type: 'miss',
             timestamp: now
           });
-        }, 50);
-      }
-      return {
-        ...prev,
-        actionResult: undefined // Clear the temporary flag
-      };
-    });
+        }
+        return {
+          ...prev,
+          actionResult: undefined // Clear the temporary flag
+        };
+      });
+    }, 50);
   }, []);
 
   // Reset character action after animation
@@ -221,7 +232,7 @@ export const useGameState = () => {
       const newQuestion = newBeat === 0 ? generateQuestion() : prev.currentQuestion;
       const newSelectedAnswer = newBeat === 0 ? null : prev.selectedAnswer;
       
-      // Auto-move character forward each beat (if no errors)
+      // Auto-move character forward each cycle (if combo > 0)
       const newCharacter = { ...prev.character };
       if (newBeat === 0 && prev.combo > 0) {
         newCharacter.x = Math.min(GRID_WIDTH - 1, newCharacter.x + 1);
