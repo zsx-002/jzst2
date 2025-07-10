@@ -25,23 +25,23 @@ export const QuestionPanel: React.FC<QuestionPanelProps> = ({
   const isAnswerPhase = currentBeat < 7;
 
   return (
-    <div className="cyberpunk-panel h-full flex flex-col p-6">
+    <div className="cyberpunk-panel min-h-[400px] lg:h-full flex flex-col p-4 lg:p-6">
       {/* Question Display */}
       <div className="mb-8">
-        <div className="text-center p-6 rounded-lg bg-gradient-to-r from-blue-900/50 to-purple-900/50 border border-cyan-400/50">
-          <p className="text-4xl font-bold text-white mb-2">{question.question}</p>
+        <div className="text-center p-4 lg:p-6 rounded-lg bg-gradient-to-r from-blue-900/50 to-purple-900/50 border border-cyan-400/50">
+          <p className="text-2xl lg:text-4xl font-bold text-white mb-2">{question.question}</p>
         </div>
       </div>
 
       {/* Answer Options */}
-      <div className="space-y-6 flex-1">
+      <div className="space-y-4 lg:space-y-6 flex-1">
         {question.options.map((option, index) => (
           <button
             key={index}
             onClick={() => isAnswerPhase && onSelectAnswer(index)}
             disabled={!isAnswerPhase}
             className={`
-              w-full p-8 rounded-lg font-bold text-3xl transition-all duration-300
+              w-full p-4 lg:p-8 rounded-lg font-bold text-xl lg:text-3xl transition-all duration-300
               border-2 cyberpunk-button
               ${!isAnswerPhase ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'}
               ${selectedAnswer === index

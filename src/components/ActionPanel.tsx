@@ -15,14 +15,14 @@ export const ActionPanel: React.FC<ActionPanelProps> = ({
   const isActionBeat = currentBeat === 7;
 
   return (
-    <div className="cyberpunk-panel h-full flex flex-col p-6">
-      <div className="space-y-6 flex-1 flex flex-col">
+    <div className="cyberpunk-panel min-h-[400px] lg:h-full flex flex-col p-4 lg:p-6">
+      <div className="space-y-4 lg:space-y-6 flex-1 flex flex-col">
         <button
           onClick={() => onAction('jump')}
           disabled={!isPlaying}
           className={`
-            flex-1 rounded-lg border-2 font-bold text-2xl transition-all duration-300
-            flex items-center justify-center gap-3 cyberpunk-button min-h-[100px]
+            flex-1 rounded-lg border-2 font-bold text-lg lg:text-2xl transition-all duration-300
+            flex items-center justify-center gap-3 cyberpunk-button min-h-[80px] lg:min-h-[100px]
             ${isActionBeat 
               ? 'bg-green-500/30 text-green-300 border-green-400 neon-glow animate-pulse' 
               : 'bg-cyan-900/30 text-cyan-300 border-cyan-400/50 hover:border-cyan-400'
@@ -30,7 +30,7 @@ export const ActionPanel: React.FC<ActionPanelProps> = ({
             ${!isPlaying ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'}
           `}
         >
-          <ChevronUp className="w-8 h-8" />
+          <ChevronUp className="w-6 h-6 lg:w-8 lg:h-8" />
           上跳
         </button>
 
@@ -38,8 +38,8 @@ export const ActionPanel: React.FC<ActionPanelProps> = ({
           onClick={() => onAction('forward')}
           disabled={!isPlaying}
           className={`
-            flex-1 rounded-lg border-2 font-bold text-2xl transition-all duration-300
-            flex items-center justify-center gap-3 cyberpunk-button min-h-[100px]
+            flex-1 rounded-lg border-2 font-bold text-lg lg:text-2xl transition-all duration-300
+            flex items-center justify-center gap-3 cyberpunk-button min-h-[80px] lg:min-h-[100px]
             ${isActionBeat 
               ? 'bg-blue-500/30 text-blue-300 border-blue-400 neon-glow animate-pulse' 
               : 'bg-cyan-900/30 text-cyan-300 border-cyan-400/50 hover:border-cyan-400'
@@ -47,7 +47,7 @@ export const ActionPanel: React.FC<ActionPanelProps> = ({
             ${!isPlaying ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'}
           `}
         >
-          <ChevronRight className="w-8 h-8" />
+          <ChevronRight className="w-6 h-6 lg:w-8 lg:h-8" />
           前进
         </button>
 
@@ -55,8 +55,8 @@ export const ActionPanel: React.FC<ActionPanelProps> = ({
           onClick={() => onAction('crouch')}
           disabled={!isPlaying}
           className={`
-            flex-1 rounded-lg border-2 font-bold text-2xl transition-all duration-300
-            flex items-center justify-center gap-3 cyberpunk-button min-h-[100px]
+            flex-1 rounded-lg border-2 font-bold text-lg lg:text-2xl transition-all duration-300
+            flex items-center justify-center gap-3 cyberpunk-button min-h-[80px] lg:min-h-[100px]
             ${isActionBeat 
               ? 'bg-purple-500/30 text-purple-300 border-purple-400 neon-glow animate-pulse' 
               : 'bg-cyan-900/30 text-cyan-300 border-cyan-400/50 hover:border-cyan-400'
@@ -64,7 +64,7 @@ export const ActionPanel: React.FC<ActionPanelProps> = ({
             ${!isPlaying ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'}
           `}
         >
-          <ChevronDown className="w-8 h-8" />
+          <ChevronDown className="w-6 h-6 lg:w-8 lg:h-8" />
           下蹲
         </button>
       </div>

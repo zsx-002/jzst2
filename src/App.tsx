@@ -58,7 +58,7 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-indigo-950 via-purple-950 to-black relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-b from-indigo-950 via-purple-950 to-black relative">
       {/* Animated background stars */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="stars"></div>
@@ -67,7 +67,7 @@ function App() {
       </div>
 
       {/* Main content */}
-      <div className="relative z-10 min-h-screen p-4">
+      <div className="relative z-10 min-h-screen p-4 pb-8">
         {/* Game Controls */}
         <div className="flex justify-center gap-4 mb-6">
           <button
@@ -105,9 +105,9 @@ function App() {
         </div>
 
         {/* Game Layout */}
-        <div className="max-w-7xl mx-auto grid grid-cols-12 gap-6">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Left Panel - Questions */}
-          <div className="col-span-3">
+          <div className="lg:col-span-3 order-1 lg:order-1">
             <QuestionPanel
               question={gameState.currentQuestion}
               selectedAnswer={gameState.selectedAnswer}
@@ -117,7 +117,7 @@ function App() {
           </div>
 
           {/* Center Panel - Game Board & Stats */}
-          <div className="col-span-6 space-y-4">
+          <div className="lg:col-span-6 space-y-4 order-3 lg:order-2">
             <GameStats 
               gameState={gameState} 
               currentBeat={gameState.currentBeat}
@@ -130,7 +130,7 @@ function App() {
           </div>
 
           {/* Right Panel - Actions */}
-          <div className="col-span-3">
+          <div className="lg:col-span-3 order-2 lg:order-3">
             <ActionPanel
               onAction={executeAction}
               currentBeat={gameState.currentBeat}
