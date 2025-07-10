@@ -105,7 +105,7 @@ function App() {
         </div>
 
         {/* Game Layout - 优化移动端高度 */}
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-2 lg:gap-6">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-1 lg:gap-6 landscape:grid-cols-3 landscape:gap-1">
           {/* Left Panel - Questions */}
           <div className="lg:col-span-3 order-1 lg:order-1">
             <QuestionPanel
