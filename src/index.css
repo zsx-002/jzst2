@@ -128,49 +128,56 @@
 }
 
 /* Mobile landscape optimization */
-@media screen and (orientation: landscape) {
+@media screen and (orientation: landscape) and (max-height: 600px) {
   body {
-    font-size: 16px;
+    font-size: 14px;
   }
   
-  .min-h-screen {
+  .mobile-landscape {
     height: 100vh;
-    height: 100dvh; /* Dynamic viewport height for mobile browsers */
-  }
-  
-  /* Ensure game controls are easily accessible in landscape */
-  .game-controls {
-    padding: 0.5rem 1rem;
-  }
-  
-  /* Optimize spacing for landscape orientation */
-  .cyberpunk-panel {
-    padding: 1rem;
+    overflow: hidden;
   }
 }
 
-/* General mobile optimizations */
+/* Prevent zoom on mobile */
+@media screen and (max-width: 768px) {
+  input, button, select, textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Smooth animations for mobile */
 * {
   -webkit-tap-highlight-color: transparent;
-}
-
-body {
-  overscroll-behavior: contain;
-  -webkit-overflow-scrolling: touch;
-  scroll-behavior: smooth;
 }
 
 button {
   touch-action: manipulation;
 }
 
-/* Ensure full height on all devices */
+/* Ensure full height on mobile browsers */
 html, body, #root {
   height: 100%;
   overflow: auto;
 }
 
+/* Fix viewport height issues on mobile */
 .min-h-screen {
   min-height: 100vh;
   min-height: -webkit-fill-available;
+}
+
+/* Improve touch targets for mobile */
+@media (max-width: 768px) {
+  button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Prevent overscroll on mobile */
+body {
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
 }
