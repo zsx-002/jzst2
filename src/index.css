@@ -1,0 +1,182 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Cyberpunk theme styles */
+@layer components {
+  .cyberpunk-panel {
+    @apply bg-gradient-to-br from-indigo-900/40 via-purple-900/40 to-pink-900/40;
+    @apply border-2 border-cyan-400/50 rounded-lg backdrop-blur-sm;
+    @apply shadow-lg shadow-cyan-400/20;
+  }
+
+  .cyberpunk-button {
+    @apply backdrop-blur-sm;
+    box-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
+  }
+
+  .cyberpunk-button:hover {
+    box-shadow: 0 0 30px rgba(34, 211, 238, 0.5);
+  }
+
+  .neon-border {
+    box-shadow: 
+      0 0 5px currentColor,
+      inset 0 0 5px currentColor,
+      0 0 10px currentColor,
+      0 0 20px currentColor;
+  }
+
+  .neon-glow {
+    box-shadow: 
+      0 0 10px currentColor,
+      0 0 20px currentColor,
+      0 0 30px currentColor;
+  }
+
+  .neon-text {
+    text-shadow: 
+      0 0 5px currentColor,
+      0 0 10px currentColor,
+      0 0 15px currentColor,
+      0 0 20px currentColor;
+  }
+}
+
+/* Animated starfield background */
+.stars {
+  width: 1px;
+  height: 1px;
+  background: transparent;
+  box-shadow: 
+    1541px 1046px #fff, 1651px 1164px #fff, 1286px 1642px #fff, 1364px 1058px #fff,
+    1696px 1059px #fff, 1129px 1718px #fff, 1984px 1221px #fff, 1749px 1313px #fff,
+    1057px 1696px #fff, 1696px 1059px #fff, 1129px 1718px #fff, 1984px 1221px #fff,
+    1749px 1313px #fff, 1057px 1696px #fff, 1696px 1059px #fff, 1129px 1718px #fff,
+    1984px 1221px #fff, 1749px 1313px #fff, 1057px 1696px #fff, 1696px 1059px #fff;
+  animation: animStar 50s linear infinite;
+}
+
+.stars:after {
+  content: " ";
+  position: absolute;
+  top: 2000px;
+  width: 1px;
+  height: 1px;
+  background: transparent;
+  box-shadow: 
+    1541px 1046px #fff, 1651px 1164px #fff, 1286px 1642px #fff, 1364px 1058px #fff,
+    1696px 1059px #fff, 1129px 1718px #fff, 1984px 1221px #fff, 1749px 1313px #fff,
+    1057px 1696px #fff, 1696px 1059px #fff, 1129px 1718px #fff, 1984px 1221px #fff,
+    1749px 1313px #fff, 1057px 1696px #fff, 1696px 1059px #fff, 1129px 1718px #fff,
+    1984px 1221px #fff, 1749px 1313px #fff, 1057px 1696px #fff, 1696px 1059px #fff;
+}
+
+.stars2 {
+  width: 2px;
+  height: 2px;
+  background: transparent;
+  box-shadow: 
+    700px 400px #22d3ee, 400px 400px #22d3ee, 1100px 300px #22d3ee, 300px 300px #22d3ee,
+    1800px 800px #22d3ee, 800px 800px #22d3ee, 1400px 600px #22d3ee, 600px 600px #22d3ee,
+    1600px 1000px #22d3ee, 1000px 1000px #22d3ee, 1200px 1200px #22d3ee, 200px 200px #22d3ee;
+  animation: animStar 100s linear infinite;
+}
+
+.stars2:after {
+  content: " ";
+  position: absolute;
+  top: 2000px;
+  width: 2px;
+  height: 2px;
+  background: transparent;
+  box-shadow: 
+    700px 400px #22d3ee, 400px 400px #22d3ee, 1100px 300px #22d3ee, 300px 300px #22d3ee,
+    1800px 800px #22d3ee, 800px 800px #22d3ee, 1400px 600px #22d3ee, 600px 600px #22d3ee,
+    1600px 1000px #22d3ee, 1000px 1000px #22d3ee, 1200px 1200px #22d3ee, 200px 200px #22d3ee;
+}
+
+.stars3 {
+  width: 3px;
+  height: 3px;
+  background: transparent;
+  box-shadow: 
+    1200px 600px #a855f7, 600px 600px #a855f7, 1600px 400px #a855f7, 400px 400px #a855f7,
+    2000px 1000px #a855f7, 1000px 1000px #a855f7, 1800px 1400px #a855f7, 800px 800px #a855f7;
+  animation: animStar 150s linear infinite;
+}
+
+.stars3:after {
+  content: " ";
+  position: absolute;
+  top: 2000px;
+  width: 3px;
+  height: 3px;
+  background: transparent;
+  box-shadow: 
+    1200px 600px #a855f7, 600px 600px #a855f7, 1600px 400px #a855f7, 400px 400px #a855f7,
+    2000px 1000px #a855f7, 1000px 1000px #a855f7, 1800px 1400px #a855f7, 800px 800px #a855f7;
+}
+
+@keyframes animStar {
+  from {
+    transform: translateY(0px);
+  }
+  to {
+    transform: translateY(-2000px);
+  }
+}
+
+/* Mobile landscape optimization */
+@media screen and (orientation: landscape) and (max-height: 600px) {
+  body {
+    font-size: 14px;
+  }
+  
+  .mobile-landscape {
+    height: 100vh;
+    overflow: hidden;
+  }
+}
+
+/* Prevent zoom on mobile */
+@media screen and (max-width: 768px) {
+  input, button, select, textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Smooth animations for mobile */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  touch-action: manipulation;
+}
+
+/* Ensure full height on mobile browsers */
+html, body, #root {
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Fix viewport height issues on mobile */
+.min-h-screen {
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+}
+
+/* Improve touch targets for mobile */
+@media (max-width: 768px) {
+  button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Prevent overscroll on mobile */
+body {
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+}
