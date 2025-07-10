@@ -23,27 +23,46 @@ function App() {
   } = useGameState();
 
   const { playSuccessSound, playErrorSound, playCelebrationSound } = useMetronome({
-    bpm: 128,
+    bpm: 140,
+    isPlaying: gameState.isPlaying,
+    onBeat: updateBeat,
+    onActionSuccess: () => {}
+  });
+
+  const { playPerfectSound } = useMetronome({
+    bpm: 140,
     isPlaying: gameState.isPlaying,
     onBeat: updateBeat,
     onActionSuccess: () => {}
   });
 
   useEffect(() => {
-    if (gameState.combo > prevCombo.current) {
-      if (gameState.combo > 0) {
+    // 处理combo变化的音效
+    if (gameState.combo > prevCombo.current && gameState.combo > 0) {
+      // 检查是否有actionResult来决定播放哪种音效
+      if (gameState.actionResult === 'perfect') {
+        playPerfectSound();
+      } else {
         playSuccessSound();
-        
-        if (gameState.combo === 5) {
+      }
+      
+      // 连击里程碑庆祝
+      if (gameState.combo === 5) {
+        setTimeout(() => {
           playCelebrationSound();
-        }
+          setToastMessage({
+            message: '🎉 连击5次！太棒了！',
+            type: 'celebration',
+            timestamp: Date.now()
+          });
+        }, 200);
       }
     } else if (gameState.combo === 0 && prevCombo.current > 0) {
       playErrorSound();
     }
     
     prevCombo.current = gameState.combo;
-  }, [gameState.combo, playSuccessSound, playErrorSound, playCelebrationSound]);
+  }, [gameState.combo, gameState.actionResult, playSuccessSound, playErrorSound, playCelebrationSound, playPerfectSound]);
 
   const handleGameToggle = () => {
     if (gameState.isPlaying) {

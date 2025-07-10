@@ -3,7 +3,7 @@ import { X } from 'lucide-react';
 
 interface ToastProps {
   message: string;
-  type: 'miss' | 'celebration';
+  type: 'miss' | 'celebration' | 'perfect';
   isVisible: boolean;
   onClose: () => void;
 }
@@ -40,7 +40,9 @@ export const ToastNotification: React.FC<ToastProps> = ({
         transition-all duration-300 ease-in-out
         ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}
         ${type === 'miss' 
-          ? 'bg-red-500 text-white' 
+          ? 'bg-red-500 text-white'
+          : type === 'perfect'
+          ? 'bg-cyan-400 text-gray-800'
           : 'bg-yellow-400 text-gray-800'
         }
       `}
@@ -48,7 +50,7 @@ export const ToastNotification: React.FC<ToastProps> = ({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="text-lg">
-            {type === 'miss' ? '❌' : '🎉'}
+            {type === 'miss' ? '❌' : type === 'perfect' ? '⭐' : '🎉'}
           </span>
           <span className="font-bold text-sm">{message}</span>
         </div>

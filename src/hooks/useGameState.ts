@@ -102,12 +102,14 @@ export const useGameState = () => {
 
   const executeAction = useCallback((action: 'jump' | 'forward' | 'crouch') => {
     const now = Date.now();
+    const beatStartTime = now - ((now - gameState.lastBeatTime) % (60000 / 140)); // 计算当前节拍开始时间
+    const timeSinceBeatStart = now - beatStartTime;
     
     setGameState(prev => {
       const newCharacter = { ...prev.character };
       let newScore = prev.score;
       let newCombo = prev.combo;
-      let actionSuccess = false;
+      let actionResult: 'perfect' | 'good' | 'miss' = 'miss';
       
       // Check if action is on beat 8 (action beat)
       const isActionBeat = prev.currentBeat === 7; // 0-indexed, so beat 8 is index 7
@@ -115,10 +117,16 @@ export const useGameState = () => {
       if (isActionBeat && prev.currentQuestion && prev.selectedAnswer !== null) {
         const isCorrectAnswer = prev.currentQuestion.options[prev.selectedAnswer] === prev.currentQuestion.correctAnswer;
         
-        if (isCorrectAnswer) {
-          newScore += 10;
+        if (isCorrectAnswer && timeSinceBeatStart <= 200) { // 200ms窗口
+          // 判断是否为Perfect时机（100ms内）
+          if (timeSinceBeatStart <= 100) {
+            actionResult = 'perfect';
+            newScore += 20; // Perfect给更高分数
+          } else {
+            actionResult = 'good';
+            newScore += 10;
+          }
           newCombo += 1;
-          actionSuccess = true;
           
           // Execute character action
           switch (action) {
@@ -133,15 +141,18 @@ export const useGameState = () => {
               break;
           }
         } else {
-          // Wrong answer selected - miss
+          // Wrong answer or outside timing window - miss
           newCombo = 0;
+          actionResult = 'miss';
         }
       } else if (isActionBeat) {
         // Action executed on correct beat but no answer selected or wrong timing - miss
         newCombo = 0;
+        actionResult = 'miss';
       } else {
         // Action executed on wrong beat - miss
         newCombo = 0;
+        actionResult = 'miss';
       }
       
       newCharacter.action = action;
@@ -153,22 +164,32 @@ export const useGameState = () => {
         score: newScore,
         combo: newCombo,
         lastActionTime: now,
-        actionSuccess
+        actionResult
       };
     });
     
-    // Show miss toast if action was not successful
+    // Show appropriate toast based on action result
     setGameState(prev => {
-      if (!prev.actionSuccess) {
-        setToastMessage({
-          message: 'MISS! 连击中断',
-          type: 'miss',
-          timestamp: now
-        });
+      if (prev.actionResult === 'perfect') {
+        setTimeout(() => {
+          setToastMessage({
+            message: 'Perfect! 完美时机！',
+            type: 'perfect',
+            timestamp: now
+          });
+        }, 50);
+      } else if (prev.actionResult === 'miss') {
+        setTimeout(() => {
+          setToastMessage({
+            message: 'MISS! 连击中断',
+            type: 'miss',
+            timestamp: now
+          });
+        }, 50);
       }
       return {
         ...prev,
-        actionSuccess: undefined // Clear the temporary flag
+        actionResult: undefined // Clear the temporary flag
       };
     });
   }, []);
@@ -190,28 +211,11 @@ export const useGameState = () => {
   }, [gameState.character.action]);
 
   const updateBeat = useCallback(() => {
-    let celebrationToast = false;
-    let showMiss = false;
+    const now = Date.now();
     
     setGameState(prev => {
       const newBeat = (prev.currentBeat + 1) % BEATS_PER_CYCLE;
       const newCycle = newBeat === 0 ? prev.currentCycle + 1 : prev.currentCycle;
-      
-      // Check for miss on beat transition from action beat (beat 8)
-      let newCombo = prev.combo;
-      
-      // If transitioning away from action beat (beat 8)
-      if (prev.currentBeat === 7) {
-        // Check if an action was executed in the last 150ms (timing window)
-        const timeSinceLastAction = Date.now() - prev.lastActionTime;
-        const hasRecentAction = timeSinceLastAction <= 150;
-        
-        // Miss if no recent action or no answer was selected
-        if (!hasRecentAction || prev.selectedAnswer === null) {
-          newCombo = 0;
-          showMiss = true;
-        }
-      }
       
       // Generate new question on beat 1 (index 0)
       const newQuestion = newBeat === 0 ? generateQuestion() : prev.currentQuestion;
@@ -219,13 +223,8 @@ export const useGameState = () => {
       
       // Auto-move character forward each beat (if no errors)
       const newCharacter = { ...prev.character };
-      if (newBeat === 0 && newCombo > 0) {
+      if (newBeat === 0 && prev.combo > 0) {
         newCharacter.x = Math.min(GRID_WIDTH - 1, newCharacter.x + 1);
-      }
-      
-      // Check for celebration milestone
-      if (newCombo === 5 && prev.combo === 4) {
-        celebrationToast = true;
       }
       
       return {
@@ -235,29 +234,9 @@ export const useGameState = () => {
         currentQuestion: newQuestion,
         selectedAnswer: newSelectedAnswer,
         character: newCharacter,
-        combo: newCombo
+        lastBeatTime: now
       };
     });
-    
-    // Show celebration toast for 5-combo milestone
-    if (celebrationToast) {
-      setTimeout(() => {
-        setToastMessage({
-          message: '🎉 连击5次！太棒了！',
-          type: 'celebration',
-          timestamp: Date.now()
-        });
-      }, 100);
-    }
-    
-    // Show miss toast if needed
-    if (showMiss) {
-      setToastMessage({
-        message: 'MISS! 错过动作时机',
-        type: 'miss',
-        timestamp: Date.now()
-      });
-    }
   }, [generateQuestion]);
 
   const clearToast = useCallback(() => {

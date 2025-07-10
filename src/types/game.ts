@@ -8,8 +8,9 @@ export interface GameState {
   currentQuestion: Question | null;
   selectedAnswer: number | null;
   lastActionTime: number;
+  lastBeatTime: number;
   gameGrid: GridCell[][];
-  actionSuccess?: boolean;
+  actionResult?: 'perfect' | 'good' | 'miss';
 }
 
 export interface CharacterState {
@@ -43,6 +44,6 @@ export interface GameConfig {
 
 export interface ToastMessage {
   message: string;
-  type: 'miss' | 'celebration';
+  type: 'miss' | 'celebration' | 'perfect';
   timestamp: number;
 }
