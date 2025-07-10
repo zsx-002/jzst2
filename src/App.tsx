@@ -137,20 +137,3 @@ function App() {
               isPlaying={gameState.isPlaying}
             />
           </div>
-        </div>
-        
-        {/* Toast Notifications */}
-        {toastMessage && (
-          <ToastNotification
-            message={toastMessage.message}
-            type={toastMessage.type}
-            isVisible={true}
-            onClose={clearToast}
-          />
-        )}
-      </div>
-    </div>
-  );
-}
-
-export default App;
