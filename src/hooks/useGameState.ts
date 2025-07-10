@@ -60,15 +60,6 @@ export const useGameState = () => {
       question = `${larger} - ${smaller} = ?`;
     }
     
-    // Generate wrong answer
-    const wrongAnswer = correctAnswer + (Math.random() > 0.5 ? 
-      Math.floor(Math.random() * 10) + 1 : 
-      -(Math.floor(Math.random() * 10) + 1));
-    
-    const options = Math.random() > 0.5 ? 
-      [correctAnswer, wrongAnswer] : 
-      [wrongAnswer, correctAnswer];
-    
     return {
       question,
       options,
@@ -184,25 +175,22 @@ export const useGameState = () => {
     // Show appropriate toast based on action result
     setTimeout(() => {
       setGameState(prev => {
-        if (prev.actionResult === 'perfect') {
-          setToastMessage({
-            message: 'Perfect! 完美时机！',
-            type: 'perfect',
-            timestamp: now
-          });
-        } else if (prev.actionResult === 'miss') {
-          setToastMessage({
-            message: 'MISS! 连击中断',
-            type: 'miss',
-            timestamp: now
-          });
-        }
+        // Toast messages are now handled in GameStats component
+        // Only set celebration toasts here for milestones
         return {
           ...prev,
-          actionResult: undefined // Clear the temporary flag
+          // Keep actionResult for a short time to show in GameStats
         };
       });
     }, 50);
+    
+    // Clear actionResult after showing toast
+    setTimeout(() => {
+      setGameState(prev => ({
+        ...prev,
+        actionResult: undefined
+      }));
+    }, 2000);
   }, []);
 
   // Reset character action after animation

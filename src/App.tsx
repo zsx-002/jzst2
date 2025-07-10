@@ -120,7 +120,7 @@ function App() {
         </div>
 
         {/* Game Layout - 优化移动端高度 */}
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-1 lg:gap-6 landscape:grid-cols-3 landscape:gap-1">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-1 lg:gap-6 landscape:grid-cols-3 landscape:gap-1 items-end">
           {/* Left Panel - Questions */}
           <div className="lg:col-span-3 order-1">
             <QuestionPanel
@@ -132,7 +132,7 @@ function App() {
           </div>
 
           {/* Center Panel - Game Board & Stats */}
-          <div className="lg:col-span-6 space-y-2 lg:space-y-4 order-2 relative">
+          <div className="lg:col-span-6 space-y-2 lg:space-y-4 order-2">
             <GameStats 
               gameState={gameState} 
               currentBeat={gameState.currentBeat}
@@ -142,18 +142,6 @@ function App() {
               character={gameState.character}
               currentBeat={gameState.currentBeat}
             />
-            
-            {/* Toast Notifications - 浮在中间区域 */}
-            {toastMessage && (
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 pointer-events-none">
-                <ToastNotification
-                  message={toastMessage.message}
-                  type={toastMessage.type}
-                  isVisible={true}
-                  onClose={clearToast}
-                />
-              </div>
-            )}
           </div>
 
           {/* Right Panel - Actions */}
@@ -165,6 +153,18 @@ function App() {
             />
           </div>
         </div>
+        
+        {/* Celebration toast - only for milestone achievements */}
+        {toastMessage && toastMessage.type === 'celebration' && (
+          <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 pointer-events-none">
+            <ToastNotification
+              message={toastMessage.message}
+              type={toastMessage.type}
+              isVisible={true}
+              onClose={clearToast}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
