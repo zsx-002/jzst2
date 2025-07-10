@@ -25,23 +25,23 @@ export const QuestionPanel: React.FC<QuestionPanelProps> = ({
   const isAnswerPhase = currentBeat < 7;
 
   return (
-    <div className="cyberpunk-panel min-h-[400px] lg:h-full flex flex-col p-4 lg:p-6">
+    <div className="cyberpunk-panel min-h-[280px] lg:min-h-[400px] lg:h-full flex flex-col p-3 lg:p-6">
       {/* Question Display */}
-      <div className="mb-8">
-        <div className="text-center p-4 lg:p-6 rounded-lg bg-gradient-to-r from-blue-900/50 to-purple-900/50 border border-cyan-400/50">
-          <p className="text-2xl lg:text-4xl font-bold text-white mb-2">{question.question}</p>
+      <div className="mb-4 lg:mb-8">
+        <div className="text-center p-3 lg:p-6 rounded-lg bg-gradient-to-r from-blue-900/50 to-purple-900/50 border border-cyan-400/50">
+          <p className="text-xl lg:text-4xl font-bold text-white mb-1 lg:mb-2">{question.question}</p>
         </div>
       </div>
 
       {/* Answer Options */}
-      <div className="space-y-4 lg:space-y-6 flex-1">
+      <div className="space-y-2 lg:space-y-6 flex-1">
         {question.options.map((option, index) => (
           <button
             key={index}
             onClick={() => isAnswerPhase && onSelectAnswer(index)}
             disabled={!isAnswerPhase}
             className={`
-              w-full p-4 lg:p-8 rounded-lg font-bold text-xl lg:text-3xl transition-all duration-300
+              w-full p-3 lg:p-8 rounded-lg font-bold text-lg lg:text-3xl transition-all duration-300
               border-2 cyberpunk-button
               ${!isAnswerPhase ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'}
               ${selectedAnswer === index
@@ -56,7 +56,7 @@ export const QuestionPanel: React.FC<QuestionPanelProps> = ({
       </div>
 
       {!isAnswerPhase && (
-        <div className="mt-4 p-3 bg-orange-500/20 border border-orange-400/50 rounded-lg">
+        <div className="mt-2 lg:mt-4 p-2 lg:p-3 bg-orange-500/20 border border-orange-400/50 rounded-lg">
           <p className="text-orange-300 text-sm font-medium text-center">
             答题时间结束！准备执行动作
           </p>

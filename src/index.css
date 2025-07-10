@@ -128,13 +128,59 @@
 }
 
 /* Mobile landscape optimization */
-@media screen and (orientation: landscape) and (max-height: 600px) {
+@media screen and (orientation: landscape) and (max-height: 700px) {
   body {
     font-size: 14px;
   }
   
-  .mobile-landscape {
-    height: 100vh;
+  /* 横屏模式下的特殊优化 */
+  .min-h-screen {
+    min-height: 100vh;
+    min-height: 100dvh; /* 动态视口高度 */
+  }
+  
+  /* 减少横屏模式下的间距 */
+  .space-y-4 > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 0.5rem;
+  }
+  
+  .space-y-6 > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 1rem;
+  }
+  
+  /* 优化按钮高度 */
+  .cyberpunk-button {
+    min-height: 50px !important;
+  }
+  
+  /* 优化面板内边距 */
+  .cyberpunk-panel {
+    padding: 0.75rem !important;
+  }
+}
+
+/* 超小屏幕横屏优化 */
+@media screen and (orientation: landscape) and (max-height: 500px) {
+  .cyberpunk-panel {
+    padding: 0.5rem !important;
+  }
+  
+  .cyberpunk-button {
+    min-height: 40px !important;
+    font-size: 0.875rem !important;
+  }
+  
+  /* 进一步减少间距 */
+  .space-y-2 > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 0.25rem;
+  }
+  
+  .space-y-4 > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 0.25rem;
+  }
+  
+  /* 减少游戏板高度 */
+  .relative.w-full {
     overflow: hidden;
   }
 }
@@ -164,7 +210,14 @@ html, body, #root {
 /* Fix viewport height issues on mobile */
 .min-h-screen {
   min-height: 100vh;
-  min-height: -webkit-fill-available;
+  min-height: 100dvh; /* 使用动态视口高度 */
+}
+
+/* 移动端容器优化 */
+@media (max-width: 1024px) {
+  .min-h-screen {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
 }
 
 /* Improve touch targets for mobile */
@@ -180,4 +233,7 @@ body {
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
+  /* 防止地址栏影响高度计算 */
+  height: 100vh;
+  height: 100dvh;
 }

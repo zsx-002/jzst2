@@ -32,11 +32,11 @@ export const GameBoard: React.FC<GameBoardProps> = ({ grid, character, currentBe
   return (
     <div className="cyberpunk-panel relative">
       {/* Game area with cyberpunk cityscape background */}
-      <div className="relative w-full h-64 lg:h-96 bg-gradient-to-b from-purple-900/50 to-indigo-900/50 rounded-lg overflow-hidden">
+      <div className="relative w-full h-48 lg:h-96 bg-gradient-to-b from-purple-900/50 to-indigo-900/50 rounded-lg overflow-hidden">
         {/* Cyberpunk cityscape background */}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-900/20 to-indigo-900/40">
           {/* Building silhouettes */}
-          <div className="absolute bottom-0 left-0 w-full h-16 lg:h-32 bg-gradient-to-t from-black/60 to-transparent"></div>
+          <div className="absolute bottom-0 left-0 w-full h-12 lg:h-32 bg-gradient-to-t from-black/60 to-transparent"></div>
           
           {/* Grid lines for cyberpunk effect */}
           <div className="absolute inset-0 opacity-20">
@@ -60,7 +60,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ grid, character, currentBe
         {/* Character */}
         <div
           className={`
-            absolute w-8 h-8 lg:w-12 lg:h-12 flex items-center justify-center text-2xl lg:text-3xl
+            absolute w-6 h-6 lg:w-12 lg:h-12 flex items-center justify-center text-xl lg:text-3xl
             transition-all duration-300 ease-in-out z-10
             ${character.isMoving ? 'scale-110' : 'scale-100'}
           `}
@@ -78,7 +78,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ grid, character, currentBe
         {/* Action indicator */}
         <div className="absolute top-4 right-4">
           <div className={`
-            w-6 h-6 lg:w-8 lg:h-8 rounded-full flex items-center justify-center text-lg lg:text-2xl
+            w-5 h-5 lg:w-8 lg:h-8 rounded-full flex items-center justify-center text-base lg:text-2xl
             ${currentBeat === 7 ? 'animate-pulse bg-green-400/30 border-2 border-green-400' : 'bg-gray-600/30 border border-gray-400'}
           `}>
             ⚡
@@ -86,13 +86,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({ grid, character, currentBe
         </div>
 
         {/* Beat progress bar */}
-        <div className="absolute bottom-4 left-4 right-4">
+        <div className="absolute bottom-2 lg:bottom-4 left-2 lg:left-4 right-2 lg:right-4">
           <div className="flex space-x-1">
             {Array.from({ length: 8 }, (_, i) => (
               <div
                 key={i}
                 className={`
-                  flex-1 h-2 rounded-full transition-all duration-150
+                  flex-1 h-1.5 lg:h-2 rounded-full transition-all duration-150
                   ${currentBeat === i
                     ? 'bg-cyan-400 shadow-lg shadow-cyan-400/50'
                     : currentBeat > i

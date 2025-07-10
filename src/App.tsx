@@ -104,8 +104,8 @@ function App() {
           </button>
         </div>
 
-        {/* Game Layout */}
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Game Layout - 优化移动端高度 */}
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-2 lg:gap-6">
           {/* Left Panel - Questions */}
           <div className="lg:col-span-3 order-1 lg:order-1">
             <QuestionPanel
@@ -117,7 +117,7 @@ function App() {
           </div>
 
           {/* Center Panel - Game Board & Stats */}
-          <div className="lg:col-span-6 space-y-4 order-3 lg:order-2">
+          <div className="lg:col-span-6 space-y-2 lg:space-y-4 order-3 lg:order-2">
             <GameStats 
               gameState={gameState} 
               currentBeat={gameState.currentBeat}
